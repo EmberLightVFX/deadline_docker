@@ -7,8 +7,10 @@ if [ ! -e "~/keys/mongodb.pem" ]; then
     python ./SSLGeneration/ssl_gen.py --client --cert-name deadline-client --keys-dir ~/keys
     python ./SSLGeneration/ssl_gen.py --pfx --cert-name deadline-client --keys-dir ~/keys --passphrase ${DB_CERT_PASS}
     cat ~/keys/${DB_HOST}.crt ~/keys/${DB_HOST}.key >~/keys/mongodb.pem
+    echo "Done generating db cert"
+    echo "Copying generated db cert"
+    cp ~/keys/deadline-client.pfx /client_certs/deadline-client.pfx
 fi
 
-cp ~/keys/deadline-client.pfx /client_certs/deadline-client.pfx
-
+echo "Run MongoDB"
 /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --config /opt/Thinkbox/DeadlineDatabase10/mongo/data/config.conf
