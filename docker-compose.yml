@@ -3,19 +3,9 @@ services:
 
   deadline-db:
     restart: unless-stopped
-    image: ghcr.io/remram44/deadline_docker/db
-    build:
-      context: .
-      target: db
-      args:
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
-        - SECRETS_USERNAME=$SECRETS_USERNAME
-        - SECRETS_PASSWORD=$SECRETS_PASSWORD
-        - DB_CERT_PASS=$DB_CERT_PASS
-        - DB_HOST=$DB_HOST
-        - CERT_ORG=$CERT_ORG
-        - CERT_OU=$CERT_OU
+    image: ghcr.io/emberlightvfx/deadline_docker/database:1.0.0
+    env_file:
+      - .env
     volumes:
       - certs:/client_certs
       - repo:/repo
@@ -28,30 +18,9 @@ services:
       - deadline-db
     restart: unless-stopped
     hostname: deadline-rcs.$ROOT_DOMAIN
-    build:
-      context: .
-      target: client
-      args:
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
-        - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-        - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-    <<: &default
-      image: ghcr.io/remram44/deadline_docker/client
-      environment:
-        - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - RCS_HTTP_PORT=$RCS_HTTP_PORT
-        - USE_RCS_TLS=$USE_RCS_TLS
-        - RCS_TLS_PORT=$RCS_TLS_PORT
-        - RCS_CERT_PASS=$RCS_CERT_PASS
-        - DB_CERT_PASS=$DB_CERT_PASS
-        - SECRETS_USERNAME=$SECRETS_USERNAME
-        - SECRETS_PASSWORD=$SECRETS_PASSWORD
-        - DB_HOST=$DB_HOST
-        - USE_WEBSERVICE=$USE_WEBSERVICE
-        - USE_LICENSE_FORWARDER=$USE_LICENSE_FORWARDER
-    command: rcs
+    image: ghcr.io/emberlightvfx/deadline_docker/client:1.0.0
+    env_file:
+      - .env
     volumes:
       - certs:/client_certs
       - server_certs:/server_certs
