@@ -1,12 +1,3 @@
-ARG DB_CERT_PASS
-ARG SECRETS_USERNAME
-ARG SECRETS_PASSWORD
-ARG DB_HOST
-ARG DEADLINE_VERSION
-ARG DEADLINE_INSTALLER_BASE
-ARG CERT_ORG
-ARG CERT_OU
-
 FROM ubuntu:18.04 as base
 
 WORKDIR /build
@@ -15,37 +6,20 @@ RUN apt-get update && apt-get install -y curl dos2unix python python-pip git
 
 
 
-
 FROM base as db
-
-ARG DB_CERT_PASS
-ARG SECRETS_USERNAME
-ARG SECRETS_PASSWORD
-ARG DB_HOST
-ARG DEADLINE_VERSION
-ARG DEADLINE_INSTALLER_BASE
-ARG CERT_ORG
-ARG CERT_OU
 
 RUN mkdir ~/keys
 
-#Generate Certificates
+#Install Certificate Generator
 RUN git clone https://github.com/ThinkboxSoftware/SSLGeneration.git &&\
     pip install pyopenssl==17.5.0
-
-RUN python ./SSLGeneration/ssl_gen.py --ca --cert-org ${CERT_ORG} --cert-ou ${CERT_OU} --keys-dir ~/keys &&\
-    python ./SSLGeneration/ssl_gen.py --server --cert-name ${DB_HOST} --alt-name localhost --alt-name 127.0.0.1 --keys-dir ~/keys &&\
-    python ./SSLGeneration/ssl_gen.py --client --cert-name deadline-client --keys-dir ~/keys &&\
-    python ./SSLGeneration/ssl_gen.py --pfx --cert-name deadline-client --keys-dir ~/keys --passphrase ${DB_CERT_PASS} &&\
-    cat ~/keys/${DB_HOST}.crt ~/keys/${DB_HOST}.key > ~/keys/mongodb.pem
-
 
 RUN mkdir /client_certs
 
 #Install Database
 RUN mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/data &&\
- mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/application &&\
- mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/data/logs
+    mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/application &&\
+    mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/data/logs
 
 COPY ./database_config/config.conf /opt/Thinkbox/DeadlineDatabase10/mongo/data/
 
@@ -63,23 +37,13 @@ ENTRYPOINT [ "./database_entrypoint.sh" ]
 
 FROM base as client
 
-ARG DEADLINE_VERSION
-ARG DEADLINE_INSTALLER_BASE
-ARG AWS_ACCESS_KEY_ID
-ARG AWS_SECRET_ACCESS_KEY
-
-
-RUN pip install awscli
-RUN AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY aws s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-linux-installers.tar Deadline-${DEADLINE_VERSION}-linux-installers.tar
-RUN tar -xvf Deadline-${DEADLINE_VERSION}-linux-installers.tar
-
 RUN mkdir ~/certs
 
-
+RUN pip install awscli
 RUN apt-get install -y lsb
+
 
 ADD ./client_entrypoint.sh .
 RUN dos2unix ./client_entrypoint.sh && chmod u+x ./client_entrypoint.sh
-
 
 ENTRYPOINT [ "./client_entrypoint.sh" ]
