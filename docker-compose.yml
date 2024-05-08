@@ -3,6 +3,7 @@ services:
 
   deadline-db:
     restart: unless-stopped
+    container_name: deadline-db
     image: ghcr.io/emberlightvfx/deadline_docker/database:1.0.0
     env_file:
       - .env
@@ -17,8 +18,10 @@ services:
     depends_on:
       - deadline-db
     restart: unless-stopped
+    container_name: deadline-rcs
     hostname: deadline-rcs.$ROOT_DOMAIN
     image: ghcr.io/emberlightvfx/deadline_docker/client:1.0.0
+    command: rcs
     env_file:
       - .env
     volumes:
