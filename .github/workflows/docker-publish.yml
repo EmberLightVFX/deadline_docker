@@ -22,7 +22,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository@L}}
 
 jobs:
   build:
@@ -33,6 +32,14 @@ jobs:
       id-token: write
 
     steps:
+
+      - name: downcase REPO
+        run: |
+          echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+      - name: use REPO
+        run: | 
+          echo "The value of REPO is: ${REPO}"
+
       - name: Set Environment Variable
         run: |
           if [ -n "${{ github.event.client_payload.VERSION }}" ]; then
@@ -71,7 +78,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${IMAGE_NAME}
           flavor: latest=${{ env.LATEST }}
           tags: type=raw,value=${{ env.VERSION }}
 
@@ -84,7 +91,7 @@ jobs:
           context: .
           push: true
           file: Dockerfile.database
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:database-${{ env.VERSION }}
+          tags: ${{ env.REGISTRY }}/${IMAGE_NAME}:database-${{ env.VERSION }}
 
       - name: Build and push Docker image for Dockerfile.client
         uses: docker/build-push-action@v5
@@ -92,4 +99,4 @@ jobs:
           context: .
           push: true
           file: Dockerfile.client
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:client-${{ env.VERSION }}
+          tags: ${{ env.REGISTRY }}/${IMAGE_NAME}:client-${{ env.VERSION }}
