@@ -33,12 +33,14 @@ jobs:
 
     steps:
 
-      - name: downcase REPO
+      - id: lower-repo
+        name: Repository to lowercase
         run: |
-          echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+          echo "repository=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
+          
       - name: use REPO
         run: | 
-          echo "The value of REPO is: ${REPO}"
+          echo "The value of REPO is: ${{ steps.lower-repo.outputs.repository }}"
 
       - name: Set Environment Variable
         run: |
@@ -78,7 +80,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${IMAGE_NAME}
+          images: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repository }}
           flavor: latest=${{ env.LATEST }}
           tags: type=raw,value=${{ env.VERSION }}
 
@@ -91,7 +93,7 @@ jobs:
           context: .
           push: true
           file: Dockerfile.database
-          tags: ${{ env.REGISTRY }}/${IMAGE_NAME}:database-${{ env.VERSION }}
+          tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repository }}:database-${{ env.VERSION }}
 
       - name: Build and push Docker image for Dockerfile.client
         uses: docker/build-push-action@v5
@@ -99,4 +101,4 @@ jobs:
           context: .
           push: true
           file: Dockerfile.client
-          tags: ${{ env.REGISTRY }}/${IMAGE_NAME}:client-${{ env.VERSION }}
+          tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repository }}:client-${{ env.VERSION }}
