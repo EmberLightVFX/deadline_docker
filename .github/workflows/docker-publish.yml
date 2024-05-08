@@ -93,7 +93,7 @@ jobs:
           context: .
           push: true
           file: Dockerfile.database
-          tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repository }}:database-${{ env.VERSION }}
+          tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repository }}/database:${{ env.VERSION }}
 
       - name: Build and push Docker image for Dockerfile.client
         uses: docker/build-push-action@v5
@@ -101,4 +101,4 @@ jobs:
           context: .
           push: true
           file: Dockerfile.client
-          tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repository }}:client-${{ env.VERSION }}
+          tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repository }}/client:${{ env.VERSION }}
