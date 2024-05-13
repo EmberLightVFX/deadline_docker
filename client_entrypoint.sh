@@ -12,9 +12,6 @@ configure_from_env() {
     fi
 }
 
-download_linux_installers() {
-}
-
 install_repository() {
     if [ ! -e "./Deadline-$DEADLINE_VERSION-linux-installers.tar" ]; then
         echo "Downloading Linux Installers"
