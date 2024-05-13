@@ -14,12 +14,12 @@ RUN mkdir /client_certs
 
 #Install Database
 RUN mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/data &&\
-    mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/application &&\
     mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/data/logs &&\
+    mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/application &&\
     mkdir -p /opt/data
-COPY ./database_config/config.conf /opt/data/
+COPY ./database_config/config.conf /opt/data/config.conf
 
-ADD ./entrypoint.sh /opt/data
-RUN dos2unix /opt/data/entrypoint.sh && chmod u+x /opt/data/entrypoint.sh
+ADD ./entrypoint.sh .
+RUN dos2unix ./entrypoint.sh && chmod u+x ./entrypoint.sh
 
-ENTRYPOINT [ "/opt/data/entrypoint.sh" ]
+ENTRYPOINT [ "./entrypoint.sh" ]
