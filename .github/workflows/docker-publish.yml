@@ -22,6 +22,9 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  LATEST: ${{ inputs.LATEST }}
+  VERSION: ${{ inputs.VERSION }}
 
 jobs:
   build:
@@ -32,37 +35,6 @@ jobs:
       id-token: write
 
     steps:
-
-      - id: lower-repo
-        name: Repository to lowercase
-        run: |
-          echo "repository=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
-          
-      - name: use REPO
-        run: | 
-          echo "The value of REPO is: ${{ steps.lower-repo.outputs.repository }}"
-
-      - name: Set Environment Variable
-        run: |
-          if [ -n "${{ github.event.client_payload.VERSION }}" ]; then
-            VERSION=${{ github.event.client_payload.VERSION }}
-          else
-            VERSION=${{ inputs.VERSION }}
-          fi
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-          if [ -z "${{ inputs.LATEST }}" ] || [ "${{ inputs.LATEST }}" == "true" ]; then
-            LATEST="true"
-          else
-            LATEST="false"
-          fi
-          echo "LATEST=$LATEST" >> $GITHUB_ENV
-
-      - name: Version and Latest tag
-        run: |
-          echo "The VERSION is ${{ env.VERSION }}"
-          echo "Latest tag is set to  ${{ env.LATEST }}"
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -80,25 +52,19 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repository }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           flavor: latest=${{ env.LATEST }}
           tags: type=raw,value=${{ env.VERSION }}
 
       - name: Meta version
         run: echo "The Meta is ${{ steps.meta.outputs.tags }}"
 
-      - name: Build and push Docker image for Dockerfile.database
-        uses: docker/build-push-action@v5
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          file: Dockerfile.database
-          tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repository }}/database:${{ env.VERSION }}
-
-      - name: Build and push Docker image for Dockerfile.client
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          file: Dockerfile.client
-          tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repository }}/client:${{ env.VERSION }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

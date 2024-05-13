@@ -7,6 +7,7 @@ if [ ! -e "~/keys/mongodb.pem" ]; then
     python ./SSLGeneration/ssl_gen.py --client --cert-name deadline-client --keys-dir ~/keys
     python ./SSLGeneration/ssl_gen.py --pfx --cert-name deadline-client --keys-dir ~/keys --passphrase ${DB_CERT_PASS}
     cat ~/keys/${DB_HOST}.crt ~/keys/${DB_HOST}.key >~/keys/mongodb.pem
+    cat ~/keys/deadline-client.crt ~/keys/deadline-client.key >~/keys/deadline-client.pem
     cat ~/keys/ca.crt ~/keys/ca.key >~/keys/ca.pem
     echo "Done generating db cert"
     echo "Copying generated db cert"
