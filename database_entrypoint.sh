@@ -3,13 +3,9 @@
 if [ ! -e "~/keys/mongodb.pem" ]; then
     echo "Generating db cert"
     python ./SSLGeneration/ssl_gen.py --ca --cert-org ${CERT_ORG} --cert-ou ${CERT_OU} --keys-dir ~/keys
-    echo "1"
-    python ./SSLGeneration/ssl_gen.py --server --cert-name ${DB_HOST} --alt-name localhost --alt-name 127.0.0.1 --keys-dir ~/keys
-    echo "2"
+    python ./SSLGeneration/ssl_gen.py --server --cert-name ${DB_HOST} --alt-name minisforum --alt-name ${ROOT_DOMAIN} --alt-name localhost --alt-name 127.0.0.1 --keys-dir ~/keys
     python ./SSLGeneration/ssl_gen.py --client --cert-name deadline-client --keys-dir ~/keys
-    echo "3"
     python ./SSLGeneration/ssl_gen.py --pfx --cert-name deadline-client --keys-dir ~/keys --passphrase ${DB_CERT_PASS}
-    echo "4"
     cat ~/keys/${DB_HOST}.crt ~/keys/${DB_HOST}.key >~/keys/mongodb.pem
     echo "Done generating db cert"
     echo "Copying generated db cert"
