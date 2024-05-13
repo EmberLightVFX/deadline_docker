@@ -2,13 +2,13 @@ FROM ubuntu:18.04 as base
 
 WORKDIR /build
 
-RUN apt-get update && apt-get install -y curl dos2unix python python-pip git python-openssl
+RUN apt-get update && apt-get install -y curl dos2unix python python-openssl python-pip git
 
 RUN mkdir ~/keys
 
 #Install Certificate Generator
 RUN git clone https://github.com/Cherie-Chen/SSLGeneration.git &&\
-    pip install pyopenssl==23.2.0
+    pip install pyopenssl
 
 RUN mkdir /client_certs
 
