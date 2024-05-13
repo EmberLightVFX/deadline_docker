@@ -73,6 +73,9 @@ if [ "$1" == "repository" ]; then
     echo "Copying over mongodb config"
     cp /opt/data/config.conf /opt/Thinkbox/DeadlineDatabase10/mongo/data/config.conf
 
+    echo "Copying certificate"
+    cp /opt/Thinkbox/DeadlineDatabase10/certs/Deadline10Client.pfx /client_certs/Deadline10Client.pfx
+
     echo "Launching MongoDB"
     /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --config /opt/data/config.conf --tlsCertificateKeyFilePassword ${DB_CERT_PASS}
 
@@ -98,7 +101,7 @@ elif [ "$1" == "rcs" ]; then
                 --mode unattended \
                 --enable-components proxyconfig \
                 --repositorydir /repo \
-                --dbsslcertificate /client_certs/deadline-client.pfx \
+                --dbsslcertificate /client_certs/Deadline10Client.pfx \
                 --dbsslpassword ${DB_CERT_PASS} \
                 --noguimode true \
                 --slavestartup false \
