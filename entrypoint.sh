@@ -12,31 +12,6 @@ configure_from_env() {
     fi
 }
 
-install_repository() {
-    if [ ! -e "./Deadline-$DEADLINE_VERSION-linux-installers.tar" ]; then
-        echo "Downloading Linux Installers"
-        aws s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-linux-installers.tar Deadline-${DEADLINE_VERSION}-linux-installers.tar
-        tar -xvf Deadline-${DEADLINE_VERSION}-linux-installers.tar
-    fi
-
-    if [ ! -f /repo/settings/repository.ini ]; then
-
-        echo "Install Repository"
-        ./DeadlineRepository-$DEADLINE_VERSION-linux-x64-installer.run --mode unattended \
-            --installmongodb true \
-            --dbListeningPort ${DB_HOST} \
-            --dbListeningPort 27100 \
-            --certgen_password ${DB_CERT_PASS} \
-            --installSecretsManagement true \
-            --secretsAdminName ${SECRETS_USERNAME} \
-            --secretsAdminPassword ${SECRETS_PASSWORD}
-
-    else
-        echo "Repository Already Installed"
-
-    fi
-}
-
 download_additional_installers() {
     echo "Downloading Installers"
     mkdir -p /installers
@@ -74,20 +49,22 @@ if [ "$1" == "repository" ]; then
 
     if [ ! -f /repo/settings/repository.ini ]; then
 
-        echo "Install Repository"
+        echo "Install Repository and MongoDB"
         ./DeadlineRepository-$DEADLINE_VERSION-linux-x64-installer.run --mode unattended \
             --installmongodb true \
             --dbListeningPort ${DB_HOST} \
-            --dbListeningPort 27100 \
             --certgen_password ${DB_CERT_PASS} \
             --installSecretsManagement true \
             --secretsAdminName ${SECRETS_USERNAME} \
             --secretsAdminPassword ${SECRETS_PASSWORD}
 
+        echo "Done Installing Repository and MongoDB"
+
     else
         echo "Repository Already Installed"
     fi
 
+    echo "Launching MongoDB"
     /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --config /opt/Thinkbox/DeadlineDatabase10/mongo/data/config.conf
 
 elif [ "$1" == "rcs" ]; then
