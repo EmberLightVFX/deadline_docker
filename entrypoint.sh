@@ -121,7 +121,7 @@ elif [ "$1" == "rcs" ]; then
                 --mode unattended \
                 --enable-components proxyconfig \
                 --repositorydir /repo \
-                --dbsslcertificate /client_certs/deadline-client.pfx \
+                --dbsslcertificate /client_certs/Deadline10Client.pfx \
                 --dbsslpassword ${DB_CERT_PASS} \
                 --noguimode true \
                 --slavestartup false \
@@ -156,7 +156,7 @@ elif [ "$1" == "webservice" ] && [ "$USE_WEBSERVICE" == "TRUE" ]; then
             --mode unattended \
             --enable-components webservice_config \
             --repositorydir /repo \
-            --dbsslcertificate /client_certs/deadline-client.pfx \
+            --dbsslcertificate /client_certs/Deadline10Client.pfx \
             --dbsslpassword ${DB_CERT_PASS} \
             --noguimode true \
             --slavestartup false \
@@ -178,7 +178,7 @@ elif [ "$1" == "forwarder" ] && [ "$USE_LICENSE_FORWARDER" == "TRUE" ]; then
         /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
             --mode unattended \
             --repositorydir /repo \
-            --dbsslcertificate /client_certs/deadline-client.pfx \
+            --dbsslcertificate /client_certs/Deadline10Client.pfx \
             --dbsslpassword ${DB_CERT_PASS} \
             --noguimode true \
             --slavestartup false \
@@ -199,7 +199,7 @@ elif [ "$1" == "zt-forwarder" ] && [ "$USE_LICENSE_FORWARDER" == "TRUE" ]; then
         /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
             --mode unattended \
             --repositorydir /repo \
-            --dbsslcertificate /client_certs/deadline-client.pfx \
+            --dbsslcertificate /client_certs/Deadline10Client.pfx \
             --dbsslpassword ${DB_CERT_PASS} \
             --noguimode true \
             --slavestartup false \
