@@ -18,7 +18,7 @@ RUN mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/data &&\
     mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/data/logs
 COPY ./database_config/config.conf /opt/Thinkbox/DeadlineDatabase10/mongo/data/
 
-ADD ./entrypoint.sh .
-RUN dos2unix ./entrypoint.sh && chmod u+x ./entrypoint.sh
+ADD ./entrypoint.sh ./entrypoint
+RUN dos2unix ./entrypoint/entrypoint.sh && chmod u+x ./entrypoint/entrypoint.sh
 
-ENTRYPOINT [ "./entrypoint.sh" ]
+ENTRYPOINT [ "./entrypoint/entrypoint.sh" ]
