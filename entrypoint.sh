@@ -57,7 +57,7 @@ if [ "$1" == "repository" ]; then
             --installSecretsManagement true \
             --secretsAdminName ${SECRETS_USERNAME} \
             --secretsAdminPassword ${SECRETS_PASSWORD} \
-            --dbOverwrite true \
+            --dbOverwrite false \
             --dbLicenseAcceptance accept \
             --debuglevel 4 \
             --dbhost ${DB_HOST}
@@ -67,10 +67,14 @@ if [ "$1" == "repository" ]; then
     else
         echo "Repository Already Installed"
     fi
+    echo "Stopping running mongodb"
+    /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --shutdown --dbpath /opt/Thinkbox/DeadlineDatabase10/mongo/data
+
+    echo "Copying over mongodb config"
+    cp /opt/data/config.conf /opt/Thinkbox/DeadlineDatabase10/mongo/data/config.conf
 
     echo "Launching MongoDB"
-    tail -f /dev/null
-    #/opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --config /opt/data/config.conf
+    /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --config /opt/data/config.conf --tlsCertificateKeyFilePassword ${DB_CERT_PASS}
 
 elif [ "$1" == "rcs" ]; then
 
