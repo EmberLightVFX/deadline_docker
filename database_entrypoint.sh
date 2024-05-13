@@ -18,5 +18,6 @@ if [ ! -e "~/keys/mongodb.pem" ]; then
 fi
 
 echo "Run MongoDB"
-/opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --config /opt/Thinkbox/DeadlineDatabase10/mongo/data/config.conf
+#/opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --config /opt/Thinkbox/DeadlineDatabase10/mongo/data/config.conf
+tail -f /dev/null
 echo "6"

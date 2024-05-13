@@ -13,18 +13,16 @@ configure_from_env() {
 }
 
 download_linux_installers() {
-    if [ ! -e "/installers/Deadline-$DEADLINE_VERSION-linux-installers.tar" ]; then
-        echo "Downloading Linux Installers"
-
-        aws s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-linux-installers.tar Deadline-${DEADLINE_VERSION}-linux-installers.tar
-        tar -xvf Deadline-${DEADLINE_VERSION}-linux-installers.tar
-    fi
 }
 
 install_repository() {
-    if [ ! -f /repo/settings/repository.ini ]; then
+    if [ ! -e "./Deadline-$DEADLINE_VERSION-linux-installers.tar" ]; then
+        echo "Downloading Linux Installers"
+        aws s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-linux-installers.tar Deadline-${DEADLINE_VERSION}-linux-installers.tar
+        tar -xvf Deadline-${DEADLINE_VERSION}-linux-installers.tar
+    fi
 
-        download_linux_installers
+    if [ ! -f /repo/settings/repository.ini ]; then
 
         echo "Install Repository"
         ./DeadlineRepository-$DEADLINE_VERSION-linux-x64-installer.run --mode unattended \
@@ -55,12 +53,12 @@ download_additional_installers() {
     mkdir -p /installers
 
     if [ ! -e "/installers/Deadline-$DEADLINE_VERSION-linux-installers.tar" ]; then
-        download_linux_installers
+        echo "Downloading Linux Installers"
+        aws s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-linux-installers.tar /installers/Deadline-${DEADLINE_VERSION}-linux-installers.tar &
     fi
 
     if [ ! -e "/installers/Deadline-$DEADLINE_VERSION-windows-installers.zip" ]; then
         echo "Downloading Windows Installers"
-        echo "/installers/Deadline-$DEADLINE_VERSION-windows-installers.zip"
         aws s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-windows-installers.zip /installers/Deadline-${DEADLINE_VERSION}-windows-installers.zip &
     fi
 
