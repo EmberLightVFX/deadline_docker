@@ -52,7 +52,7 @@ if [ "$1" == "repository" ]; then
         echo "Install Repository and MongoDB"
         ./DeadlineRepository-$DEADLINE_VERSION-linux-x64-installer.run --mode unattended \
             --installmongodb true \
-            --dbListeningPort ${DB_HOST} \
+            --dbListeningPort 27100 \
             --certgen_password ${DB_CERT_PASS} \
             --installSecretsManagement true \
             --secretsAdminName ${SECRETS_USERNAME} \
