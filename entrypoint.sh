@@ -58,6 +58,8 @@ if [ "$1" == "repository" ]; then
             --secretsAdminName ${SECRETS_USERNAME} \
             --secretsAdminPassword ${SECRETS_PASSWORD} \
             --dbOverwrite true \
+            --dbLicenseAcceptance accept \
+            --debuglevel 4 \
             --dbhost ${DB_HOST}
 
         echo "Done Installing Repository and MongoDB"
