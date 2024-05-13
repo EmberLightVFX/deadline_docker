@@ -116,6 +116,7 @@ if [ "$1" == "rcs" ]; then
                 --secretsAdminName ${SECRETS_USERNAME} \
                 --secretsAdminPassword ${SECRETS_PASSWORD} \
                 --osUsername root
+
         else
             echo "Generating Certificates"
             /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
@@ -143,7 +144,7 @@ if [ "$1" == "rcs" ]; then
 
         cleanup_installer
 
-        "$DEADLINE_CMD" secrets ConfigureServerMachine ${SECRETS_USERNAME} defaultKey root --password env:SECRETS_PASSWORD
+        "$DEADLINE_CMD" secrets ConfigureServerMachine ${SECRETS_USERNAME} defaultKey root --password ${SECRETS_PASSWORD}
 
         "$RCS_BIN"
     fi
