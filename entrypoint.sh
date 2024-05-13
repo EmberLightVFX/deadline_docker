@@ -66,7 +66,7 @@ if [ "$1" == "repository" ]; then
 
     echo "Launching MongoDB"
     tail -f /dev/null
-    #/opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --config /opt/Thinkbox/DeadlineDatabase10/mongo/data/config.conf
+    #/opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --config /opt/data/config.conf
 
 elif [ "$1" == "rcs" ]; then
 
