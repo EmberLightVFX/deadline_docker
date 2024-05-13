@@ -85,6 +85,12 @@ elif [ "$1" == "rcs" ]; then
     else
         download_additional_installers
 
+        if [ ! -e "./Deadline-$DEADLINE_VERSION-linux-installers.tar" ]; then
+            echo "Downloading Linux Installers"
+            aws s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-linux-installers.tar Deadline-${DEADLINE_VERSION}-linux-installers.tar
+            tar -xvf Deadline-${DEADLINE_VERSION}-linux-installers.tar
+        fi
+
         echo "Initializing Remote Connection Server"
         if [ -e /client_certs/Deadline10RemoteClient.pfx ]; then
             echo "Using existing certificates"
