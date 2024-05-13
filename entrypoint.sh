@@ -56,7 +56,9 @@ if [ "$1" == "repository" ]; then
             --certgen_password ${DB_CERT_PASS} \
             --installSecretsManagement true \
             --secretsAdminName ${SECRETS_USERNAME} \
-            --secretsAdminPassword ${SECRETS_PASSWORD}
+            --secretsAdminPassword ${SECRETS_PASSWORD} \
+            --dbOverwrite true \
+            --dbhost ${DB_HOST}
 
         echo "Done Installing Repository and MongoDB"
 
