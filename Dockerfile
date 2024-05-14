@@ -5,7 +5,9 @@ WORKDIR /build
 RUN apt-get update && apt-get install -y curl dos2unix python python-openssl python-pip git lsb
 
 RUN mkdir ~/keys &&\
-    mkdir ~/certs
+    mkdir ~/certs &&\
+    mkdir /installers &&\
+    mkdir /unpacked_installers
 
 #Install Certificate Generator
 RUN git clone https://github.com/Cherie-Chen/SSLGeneration.git &&\
