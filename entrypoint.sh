@@ -14,7 +14,10 @@ configure_from_env() {
 
 download_additional_installers() {
     echo "Downloading Installers"
-    mkdir -p /installers
+
+    if [ ! -d /installers ]; then
+        mkdir -p /installers
+    fi
 
     if [ ! -e "/installers/Deadline-$DEADLINE_VERSION-linux-installers.tar" ]; then
         echo "Downloading Linux Installers"
@@ -114,12 +117,12 @@ elif [ "$1" == "rcs" ]; then
                 --slavestartup false \
                 --httpport ${RCS_HTTP_PORT} \
                 --tlsport ${RCS_TLS_PORT} \
+                --blockautoupdateoverride Blocked \
                 --enabletls true \
+                --connserveruser root \
                 --tlscertificates existing \
                 --servercert /server_certs/${HOSTNAME}.pfx \
                 --cacert /server_certs/ca.crt \
-                --secretsAdminName ${SECRETS_USERNAME} \
-                --secretsAdminPassword ${SECRETS_PASSWORD} \
                 --osUsername root
 
         else
@@ -134,12 +137,12 @@ elif [ "$1" == "rcs" ]; then
                 --slavestartup false \
                 --httpport ${RCS_HTTP_PORT} \
                 --tlsport ${RCS_TLS_PORT} \
+                --blockautoupdateoverride Blocked \
                 --enabletls true \
+                --connserveruser root \
                 --tlscertificates generate \
                 --generatedcertdir ~/certs \
                 --clientcert_pass ${RCS_CERT_PASS} \
-                --secretsAdminName ${SECRETS_USERNAME} \
-                --secretsAdminPassword ${SECRETS_PASSWORD} \
                 --osUsername root
 
             cp /root/certs/Deadline10RemoteClient.pfx /client_certs/Deadline10RemoteClient.pfx
@@ -149,9 +152,7 @@ elif [ "$1" == "rcs" ]; then
 
         cleanup_installer
 
-        "$DEADLINE_CMD" secrets ConfigureServerMachine ${SECRETS_USERNAME} defaultKey root --password ${SECRETS_PASSWORD}
-
-        "$RCS_BIN"
+        "$RCS_BIN" # -tls_auth -tls_cacert /server_certs/ca.crt -tls_cert /server_certs/${HOSTNAME}.pfx
     fi
 else
     /bin/bash
