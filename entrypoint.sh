@@ -54,7 +54,7 @@ if [ "$1" == "repository" ]; then
             --installmongodb true \
             --dbListeningPort 27100 \
             --certgen_password ${DB_CERT_PASS} \
-            --installSecretsManagement true \
+            --installSecretsManagement false \
             --secretsAdminName ${SECRETS_USERNAME} \
             --secretsAdminPassword ${SECRETS_PASSWORD} \
             --prefix /repo \
