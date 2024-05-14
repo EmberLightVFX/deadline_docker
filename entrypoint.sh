@@ -61,7 +61,8 @@ if [ "$1" == "repository" ]; then
     if [ ! -f /repo/settings/repository.ini ]; then
 
         echo "Install Repository and MongoDB"
-        /unpacked_installers/DeadlineRepository-$DEADLINE_VERSION-linux-x64-installer.run --mode unattended \
+        /unpacked_installers/DeadlineRepository-$DEADLINE_VERSION-linux-x64-installer.run \
+            --mode unattended \
             --installmongodb true \
             --dbListeningPort 27100 \
             --certgen_password ${DB_CERT_PASS} \
@@ -98,17 +99,12 @@ elif [ "$1" == "rcs" ]; then
         /bin/bash -c "$RCS_BIN"
     else
         download_additional_installers
-
-        if [ ! -e "./Deadline-$DEADLINE_VERSION-linux-installers.tar" ]; then
-            echo "Downloading Linux Installers"
-            aws s3api get-object --bucket thinkbox-installers --key "Deadline/${DEADLINE_VERSION}/Linux/Deadline-${DEADLINE_VERSION}-linux-installers.tar" /installers/Deadline-${DEADLINE_VERSION}-linux-installers.tar
-            tar -xvf Deadline-${DEADLINE_VERSION}-linux-installers.tar
-        fi
+        unpack_installer
 
         echo "Initializing Remote Connection Server"
         if [ -e /client_certs/Deadline10RemoteClient.pfx ]; then
             echo "Using existing certificates"
-            /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
+            /unpacked_installers/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
                 --mode unattended \
                 --enable-components proxyconfig \
                 --repositorydir /repo \
@@ -128,7 +124,7 @@ elif [ "$1" == "rcs" ]; then
 
         else
             echo "Generating Certificates"
-            /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
+            /unpacked_installers/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
                 --mode unattended \
                 --enable-components proxyconfig \
                 --repositorydir /repo \
