@@ -152,7 +152,9 @@ elif [ "$1" == "rcs" ]; then
 
         cleanup_installer
 
-        "$RCS_BIN" # -tls_auth -tls_cacert /server_certs/ca.crt -tls_cert /server_certs/${HOSTNAME}.pfx
+        tail -f /dev/null
+
+        "$RCS_BIN" -tls_cert /server_certs/${HOSTNAME}.pfx
     fi
 else
     /bin/bash

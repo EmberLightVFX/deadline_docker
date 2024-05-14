@@ -13,6 +13,7 @@ services:
       - db_data:/opt/Thinkbox/DeadlineDatabase10/mongo/data
       - data:/opt/data
       - keys:/root/keys
+      - installers:/installers
       - unpacked_installers:/unpacked_installers
     command: repository
     ports:
