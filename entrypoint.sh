@@ -18,17 +18,17 @@ download_additional_installers() {
 
     if [ ! -e "/installers/Deadline-$DEADLINE_VERSION-linux-installers.tar" ]; then
         echo "Downloading Linux Installers"
-        aws s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-linux-installers.tar /installers/Deadline-${DEADLINE_VERSION}-linux-installers.tar &
+        aws --no-sign-request s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-linux-installers.tar /installers/Deadline-${DEADLINE_VERSION}-linux-installers.tar &
     fi
 
     if [ ! -e "/installers/Deadline-$DEADLINE_VERSION-windows-installers.zip" ]; then
         echo "Downloading Windows Installers"
-        aws s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-windows-installers.zip /installers/Deadline-${DEADLINE_VERSION}-windows-installers.zip &
+        aws --no-sign-request s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-windows-installers.zip /installers/Deadline-${DEADLINE_VERSION}-windows-installers.zip &
     fi
 
     if [ ! -e "/installers/Deadline-$DEADLINE_VERSION-osx-installers.dmg" ]; then
         echo "Downloading Mac Installers"
-        aws s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-osx-installers.dmg /installers/Deadline-${DEADLINE_VERSION}-osx-installers.dmg &
+        aws --no-sign-request s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-osx-installers.dmg /installers/Deadline-${DEADLINE_VERSION}-osx-installers.dmg &
     fi
     wait
 }
@@ -43,7 +43,7 @@ cleanup_installer() {
 if [ "$1" == "repository" ]; then
     if [ ! -e "./Deadline-$DEADLINE_VERSION-linux-installers.tar" ]; then
         echo "Downloading Linux Installers"
-        aws s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-linux-installers.tar Deadline-${DEADLINE_VERSION}-linux-installers.tar
+        aws --no-sign-request s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-linux-installers.tar Deadline-${DEADLINE_VERSION}-linux-installers.tar
         tar -xvf Deadline-${DEADLINE_VERSION}-linux-installers.tar
     fi
 
@@ -91,7 +91,7 @@ elif [ "$1" == "rcs" ]; then
 
         if [ ! -e "./Deadline-$DEADLINE_VERSION-linux-installers.tar" ]; then
             echo "Downloading Linux Installers"
-            aws s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-linux-installers.tar Deadline-${DEADLINE_VERSION}-linux-installers.tar
+            aws --no-sign-request s3 cp s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-linux-installers.tar Deadline-${DEADLINE_VERSION}-linux-installers.tar
             tar -xvf Deadline-${DEADLINE_VERSION}-linux-installers.tar
         fi
 
