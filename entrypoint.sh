@@ -57,6 +57,7 @@ if [ "$1" == "repository" ]; then
             --installSecretsManagement true \
             --secretsAdminName ${SECRETS_USERNAME} \
             --secretsAdminPassword ${SECRETS_PASSWORD} \
+            --prefix /repo \
             --dbOverwrite false \
             --dbLicenseAcceptance accept \
             --debuglevel 4 \
