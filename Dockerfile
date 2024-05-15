@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 WORKDIR /build
 
-RUN apt-get update && apt-get install -y curl file bzip2
+RUN apt-get update && apt-get install -y curl file bzip2 unzip
 
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" &&\
     unzip awscliv2.zip &&\
