@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 WORKDIR /build
 
-RUN apt-get update && apt-get install -y curl file bzip2
+RUN apt-get update && apt-get install -y curl file bzip2 awscli
 
 RUN mkdir ~/keys &&\
     mkdir ~/certs &&\
