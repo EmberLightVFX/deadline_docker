@@ -86,8 +86,8 @@ if [ "$1" == "repository" ]; then
         echo "Copying certificate"
         cp /opt/Thinkbox/DeadlineDatabase10/certs/Deadline10Client.pfx /client_certs/Deadline10Client.pfx
 
-        chmod -R 640 /opt/Thinkbox/DeadlineDatabase10/mongo/data
-        chmod -R 640 /client_certs
+        chmod -R 664 /opt/Thinkbox/DeadlineDatabase10/mongo/data
+        chmod -R 664 /client_certs
 
     else
         echo "Repository Already Installed"
@@ -152,8 +152,8 @@ elif [ "$1" == "rcs" ]; then
             cp /root/certs/Deadline10RemoteClient.pfx /client_certs/Deadline10RemoteClient.pfx
             cp /root/certs/${HOSTNAME}.pfx /server_certs/${HOSTNAME}.pfx
             cp /root/certs/ca.crt /server_certs/ca.crt
-            chmod -R 640 /server_certs
-            chmod -R 640 /client_certs
+            chmod -R 664 /server_certs
+            chmod -R 664 /client_certs
         fi
 
         cleanup_installer
