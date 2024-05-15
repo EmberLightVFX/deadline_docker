@@ -9,12 +9,15 @@ RUN mkdir ~/keys &&\
     mkdir /installers &&\
     mkdir /unpacked_installers
 
-
 #Install Database
 RUN mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/data &&\
     mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/data/logs &&\
     mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/application &&\
+    mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin &&\
     mkdir -p /opt/data
+
+# Add MongoDB bin directory to PATH
+ENV PATH="/opt/Thinkbox/DeadlineDatabase10/mongo/application/bin:${PATH}"
 
 COPY ./database_config/config.conf /opt/data/config.conf
 
