@@ -2,7 +2,12 @@ FROM ubuntu:20.04
 
 WORKDIR /build
 
-RUN apt-get update && apt-get install -y curl file bzip2 awscli
+RUN apt-get update && apt-get install -y curl file bzip2
+
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" &&\
+    unzip awscliv2.zip &&\
+    ./aws/install  &&\
+    rm awscliv2.zip
 
 RUN mkdir ~/keys &&\
     mkdir ~/certs &&\
