@@ -10,8 +10,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     rm awscliv2.zip &&\
     rm -rf ./aws
 
-RUN mkdir ~/keys &&\
-    mkdir ~/certs &&\
+RUN mkdir ~/certs &&\
     mkdir /installers &&\
     mkdir /unpacked_installers
 
