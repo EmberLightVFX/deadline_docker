@@ -4,15 +4,13 @@ services:
   deadline-db:
     restart: unless-stopped
     container_name: deadline-db
-    image: ghcr.io/emberlightvfx/deadline_docker/database:1.0.0
+    image: ghcr.io/emberlightvfx/deadline_docker:latest
     env_file:
       - .env
     volumes:
-      - certs:/client_certs
+      - client_certs:/client_certs
       - repo:/repo
       - db_data:/opt/Thinkbox/DeadlineDatabase10/mongo/data
-      - data:/opt/data
-      - keys:/root/keys
       - installers:/installers
       - unpacked_installers:/unpacked_installers
     command: repository
@@ -25,12 +23,12 @@ services:
     restart: unless-stopped
     container_name: deadline-rcs
     hostname: deadline-rcs.$ROOT_DOMAIN
-    image: ghcr.io/emberlightvfx/deadline_docker/client:1.0.0
+    image: ghcr.io/emberlightvfx/deadline_docker:latest
     command: rcs
     env_file:
       - .env
     volumes:
-      - certs:/client_certs
+      - client_certs:/client_certs
       - server_certs:/server_certs
       - repo:/repo
       - installers:/installers
@@ -45,18 +43,16 @@ services:
     restart: unless-stopped
     volumes:
       - repo:/srv/repo
-      - certs:/srv/certs
+      - client_certs:/srv/certs
       - installers:/srv/installers
     ports:
       - 8080:80
 
 volumes:
   db_data:
-  certs:
+  client_certs:
   server_certs:
   repo:
-  data:
-  keys:
   installers:
   unpacked_installers:
 

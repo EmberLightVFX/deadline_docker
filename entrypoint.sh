@@ -21,22 +21,16 @@ download_additional_installers() {
 
     if [ ! -e "/installers/Deadline-$DEADLINE_VERSION-linux-installers.tar" ]; then
         echo "Downloading Linux Installers"
-        # s3://thinkbox-installers/Deadline/10.3.2.1/Linux/Deadline-10.3.2.1-linux-installers.tar
-        # aws s3api get-object --bucket thinkbox-installers --key Deadline/10.3.2.1/Linux/Deadline-10.3.2.1-linux-installers.tar Deadline-10.3.2.1-linux-installers.tar
         aws s3api get-object --bucket thinkbox-installers --key "Deadline/${DEADLINE_VERSION}/Linux/Deadline-${DEADLINE_VERSION}-linux-installers.tar" /installers/Deadline-${DEADLINE_VERSION}-linux-installers.tar
     fi
 
     if [ ! -e "/installers/Deadline-$DEADLINE_VERSION-windows-installers.zip" ]; then
         echo "Downloading Windows Installers"
-        # s3://thinkbox-installers/Deadline/10.3.2.1/Windows/Deadline-10.3.2.1-windows-installers.zip
-        # aws s3api get-object --bucket thinkbox-installers --key Deadline/10.3.2.1/Windows/Deadline-10.3.2.1-windows-installers.zip Deadline-10.3.2.1-windows-installers.zip
         aws s3api get-object --bucket thinkbox-installers --key "Deadline/${DEADLINE_VERSION}/Windows/Deadline-${DEADLINE_VERSION}-windows-installers.zip" /installers/Deadline-${DEADLINE_VERSION}-windows-installers.zip
     fi
 
     if [ ! -e "/installers/Deadline-$DEADLINE_VERSION-osx-installers.dmg" ]; then
         echo "Downloading Mac Installers"
-        # s3://thinkbox-installers/Deadline/10.3.2.1/Mac/Deadline-10.3.2.1-osx-installers.dmg
-        # aws s3api get-object --bucket thinkbox-installers --key Deadline/10.3.2.1/Mac/Deadline-10.3.2.1-osx-installers.dmg Deadline-10.3.2.1-osx-installers.dmg
         aws s3api get-object --bucket thinkbox-installers --key "Deadline/${DEADLINE_VERSION}/Mac/Deadline-${DEADLINE_VERSION}-osx-installers.dmg" /installers/Deadline-${DEADLINE_VERSION}-osx-installers.dmg
     fi
     wait
@@ -58,10 +52,11 @@ cleanup_installer() {
 
 if [ "$1" == "repository" ]; then
     echo "Deadline Repostitory"
+
     download_additional_installers
     unpack_installer
 
-    if [ ! -f /repo/settings/repository.ini ]; then
+    if [ ! -f /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod ]; then
 
         echo "Install Repository and MongoDB"
         /unpacked_installers/DeadlineRepository-$DEADLINE_VERSION-linux-x64-installer.run \
@@ -82,20 +77,20 @@ if [ "$1" == "repository" ]; then
 
         echo "Done Installing Repository and MongoDB"
 
+        echo "Stopping MongoDB"
+        /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --shutdown --dbpath /opt/Thinkbox/DeadlineDatabase10/mongo/data
+
+        echo "Copying over MongoDB config"
+        cp /opt/data/config.conf /opt/Thinkbox/DeadlineDatabase10/mongo/data/config.conf
+
+        echo "Copying certificate"
+        cp /opt/Thinkbox/DeadlineDatabase10/certs/Deadline10Client.pfx /client_certs/Deadline10Client.pfx
+
     else
         echo "Repository Already Installed"
     fi
-    echo "Stopping running mongodb"
-    /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --shutdown --dbpath /opt/Thinkbox/DeadlineDatabase10/mongo/data
 
-    echo "Copying over mongodb config"
-    cp /opt/data/config.conf /opt/Thinkbox/DeadlineDatabase10/mongo/data/config.conf
-
-    echo "Copying certificate"
-    cp /opt/Thinkbox/DeadlineDatabase10/certs/Deadline10Client.pfx /client_certs/Deadline10Client.pfx
-    cp /opt/Thinkbox/DeadlineDatabase10/certs/mongo_client.pem /server_certs/mongo_client.pem
-
-    echo "Re-launching MongoDB"
+    echo "Launching MongoDB"
     /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --config /opt/data/config.conf --tlsCertificateKeyFilePassword ${DB_CERT_PASS}
 
 elif [ "$1" == "rcs" ]; then
@@ -130,7 +125,7 @@ elif [ "$1" == "rcs" ]; then
                 --osUsername root
 
         else
-            echo "Generating Certificates"
+            echo "Generating certificates"
             /unpacked_installers/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
                 --mode unattended \
                 --enable-components proxyconfig \
@@ -150,6 +145,7 @@ elif [ "$1" == "rcs" ]; then
                 --clientcert_pass ${RCS_CERT_PASS} \
                 --osUsername root
 
+            echo "Copying certificates"
             cp /root/certs/Deadline10RemoteClient.pfx /client_certs/Deadline10RemoteClient.pfx
             cp /root/certs/${HOSTNAME}.pfx /server_certs/${HOSTNAME}.pfx
             cp /root/certs/ca.crt /server_certs/ca.crt
@@ -158,6 +154,7 @@ elif [ "$1" == "rcs" ]; then
         cleanup_installer
 
         # /opt/Thinkbox/Deadline10/bin/deadlinercs -tls_cert /client_certs/Deadline10RemoteClient.pfx
+        echo "Launching Deadline Remote Connection Server"
         "$RCS_BIN" -tls_auth -tls_cacert /server_certs/ca.crt -tls_cert /server_certs/${HOSTNAME}.pfx
     fi
 else
