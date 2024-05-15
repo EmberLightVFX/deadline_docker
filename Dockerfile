@@ -2,10 +2,13 @@ FROM ubuntu:20.04
 
 WORKDIR /build
 
+RUN apt-get update
+
 RUN mkdir ~/keys &&\
     mkdir ~/certs &&\
     mkdir /installers &&\
     mkdir /unpacked_installers
+
 
 #Install Database
 RUN mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/data &&\
