@@ -12,6 +12,7 @@ RUN mkdir ~/keys &&\
 #Install Database
 RUN mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/data &&\
     mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/application &&\
+    mkdir -p /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin &&\
     mkdir -p /opt/data
 
 # Add MongoDB bin directory to PATH
