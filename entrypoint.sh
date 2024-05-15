@@ -98,7 +98,7 @@ if [ "$1" == "repository" ]; then
 
 elif [ "$1" == "rcs" ]; then
     echo "Deadline Remote Connection Server"
-    if [ !-e "$RCS_BIN" ]; then
+    if [ ! -e "$RCS_BIN" ]; then
 
         download_additional_installers
         unpack_installer
@@ -157,6 +157,7 @@ elif [ "$1" == "rcs" ]; then
         cleanup_installer
 
     fi
+
     echo "Launching Deadline Remote Connection Server"
     "$RCS_BIN" -tls_auth -tls_cacert /server_certs/ca.crt -tls_cert /server_certs/${HOSTNAME}.pfx
 else
