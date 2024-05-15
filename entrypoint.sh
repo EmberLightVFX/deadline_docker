@@ -56,7 +56,7 @@ if [ "$1" == "repository" ]; then
     download_additional_installers
     unpack_installer
 
-    if [ ! -f /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod ]; then
+    if [ ! -e /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod ]; then
 
         echo "Install Repository and MongoDB"
         /unpacked_installers/DeadlineRepository-$DEADLINE_VERSION-linux-x64-installer.run \
@@ -94,14 +94,12 @@ if [ "$1" == "repository" ]; then
     fi
 
     echo "Launching MongoDB"
-    /bin/bash -c /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --config /opt/data/config.conf --tlsCertificateKeyFilePassword ${DB_CERT_PASS}
+    /opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod --config /opt/data/config.conf --tlsCertificateKeyFilePassword ${DB_CERT_PASS}
 
 elif [ "$1" == "rcs" ]; then
     echo "Deadline Remote Connection Server"
-    if [ -e "$RCS_BIN" ]; then
+    if [ !-e "$RCS_BIN" ]; then
 
-        /bin/bash -c "$RCS_BIN" -tls_auth -tls_cacert /server_certs/ca.crt -tls_cert /server_certs/${HOSTNAME}.pfx
-    else
         download_additional_installers
         unpack_installer
 
@@ -158,10 +156,9 @@ elif [ "$1" == "rcs" ]; then
 
         cleanup_installer
 
-        # /opt/Thinkbox/Deadline10/bin/deadlinercs -tls_cert /client_certs/Deadline10RemoteClient.pfx
-        echo "Launching Deadline Remote Connection Server"
-        /bin/bash -c "$RCS_BIN" -tls_auth -tls_cacert /server_certs/ca.crt -tls_cert /server_certs/${HOSTNAME}.pfx
     fi
+    echo "Launching Deadline Remote Connection Server"
+    "$RCS_BIN" -tls_auth -tls_cacert /server_certs/ca.crt -tls_cert /server_certs/${HOSTNAME}.pfx
 else
     /bin/bash
 fi
