@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 WORKDIR /build
 
-RUN apt-get update
+RUN apt-get update && apt-get install -y lsb
 
 RUN mkdir ~/keys &&\
     mkdir ~/certs &&\
