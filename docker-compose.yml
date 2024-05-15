@@ -49,11 +49,11 @@ services:
       - 8080:80
 
 volumes:
-  db_data:
   client_certs:
-  server_certs:
-  repo:
+  db_data:
   installers:
+  repo:
+  server_certs:
   unpacked_installers:
 
 
